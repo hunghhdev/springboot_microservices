@@ -3,6 +3,7 @@ package example.springcloud.moviecatalogservice.resource;
 import example.springcloud.moviecatalogservice.models.CatalogItem;
 import example.springcloud.moviecatalogservice.models.Movie;
 import example.springcloud.moviecatalogservice.models.Rating;
+import example.springcloud.moviecatalogservice.models.UserRating;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,12 +29,10 @@ public class MovieCatalogResource {
     @RequestMapping("/{userId}")
     public List<CatalogItem> getCatalog(@PathVariable("userId") String userId){
 
-        List<Rating> ratings = Arrays.asList(
-                new Rating("1234", 4),
-                new Rating("5678", 3)
-        );
+        UserRating ratings = restTemplate.getForObject("http://localhost:8083/ratingsdata/users/"+userId, UserRating.class);
 
-        return ratings.stream().map(rating -> {
+        return ratings.getUserRating().stream().map(rating -> {
+            // For each movie ID, call movie info service and get details
             Movie movie = restTemplate.getForObject("http://localhost:8082/movies/" + rating.getMovieId(), Movie.class);
             /*Movie movie = webClientBuilder.build()
                     .get()
@@ -41,6 +40,7 @@ public class MovieCatalogResource {
                     .retrieve()
                     .bodyToMono(Movie.class)
                     .block();*/
+            // Put them all together
             return new CatalogItem(movie.getName(), "test", rating.getRating());
         }).collect(Collectors.toList());
     }

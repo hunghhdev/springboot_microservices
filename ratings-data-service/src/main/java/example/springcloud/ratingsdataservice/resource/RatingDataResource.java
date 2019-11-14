@@ -1,6 +1,7 @@
 package example.springcloud.ratingsdataservice.resource;
 
 import example.springcloud.ratingsdataservice.models.Rating;
+import example.springcloud.ratingsdataservice.models.UserRating;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,11 +19,13 @@ public class RatingDataResource {
     }
 
     @RequestMapping("users/{userId}")
-    public List<Rating> getUserRating(@PathVariable("userId") String userId){
+    public UserRating getUserRating(@PathVariable("userId") String userId){
         List<Rating> ratings = Arrays.asList(
                 new Rating("1234", 4),
                 new Rating("5678", 3)
         );
-        return ratings;
+        UserRating userRating = new UserRating();
+        userRating.setUserRating(ratings);
+        return userRating;
     }
 }
