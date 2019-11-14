@@ -34,13 +34,13 @@ public class MovieCatalogResource {
         );
 
         return ratings.stream().map(rating -> {
-//            Movie movie = restTemplate.getForObject("http://localhost:8082/movies/" + rating.getMovieId(), Movie.class);
-            Movie movie = webClientBuilder.build()
+            Movie movie = restTemplate.getForObject("http://localhost:8082/movies/" + rating.getMovieId(), Movie.class);
+            /*Movie movie = webClientBuilder.build()
                     .get()
                     .uri("http://localhost:8082/movies/" + rating.getMovieId())
                     .retrieve()
                     .bodyToMono(Movie.class)
-                    .block();
+                    .block();*/
             return new CatalogItem(movie.getName(), "test", rating.getRating());
         }).collect(Collectors.toList());
     }
